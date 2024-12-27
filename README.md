@@ -74,7 +74,7 @@ We use the same endpoint as above, but we pass different variables in the body.
 
 ```JSON
 {
-  "query": "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug \n limit:$limit \n skip: $skip \n filters:$filters){questions:data{frontendQuestionId:questionFrontendId \n paidOnly:isPaidOnly \n titleSlug \n title \n difficulty \n hints \n topicTags{name} \n codeDefinition \n content}}}",
+  "query": "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug \n limit:$limit \n skip: $skip \n filters:$filters){questions:data{frontendQuestionId:questionFrontendId \n titleSlug \n title \n difficulty \n hints \n topicTags{name} \n codeDefinition \n content}}}",
   "variables": {
     "categorySlug": "all-code-essentials",
     "skip": 0,
@@ -95,7 +95,6 @@ Sample response:
             "questions": [
                 {
                     "frontendQuestionId": "1",
-                    "paidOnly": false,
                     "titleSlug": "two-sum",
                     "title": "Two Sum",
                     "difficulty": "Easy",
@@ -122,7 +121,7 @@ Sample response:
 }
 ```
 
-So we get the list of slugs based on `data.problemsetQuestionList.questions`. We'll need to filter out the `paidOnly = true` because we don't have premium.
+So we get the list of slugs based on `data.problemsetQuestionList.questions`. ~~We'll need to filter out the `paidOnly = true` because we don't have premium~~ If `"content": null`, then it's a premium problem.
 
 ### 4. Create HTML files per problem
 

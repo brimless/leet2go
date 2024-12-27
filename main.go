@@ -21,7 +21,6 @@ const LEETCODE_URL = "https://leetcode.com/graphql/"
 
 type Question struct {
 	Id         string   `json:"frontendQuestionId"`
-	PaidOnly   bool     `json:"paidOnly"`
 	TitleSlug  string   `json:"titleSlug"`
 	Title      string   `json:"title"`
 	Difficulty string   `json:"difficulty"`
@@ -29,8 +28,8 @@ type Question struct {
 	Topics     []struct {
 		Name string `json:"name"`
 	} `json:"topicTags"`
-	CodeDefinition string `json:"codeDefinition"`
-	Content        string `json:"content"`
+	CodeDefinition string  `json:"codeDefinition"`
+	Content        *string `json:"content"` // this is null only if it is a premium problem
 }
 
 type LeetCodeResponse struct {
