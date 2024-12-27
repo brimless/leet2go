@@ -84,6 +84,8 @@ func main() {
 		// TODO: actually do the request here and store information somewhere
 		// TODO: also implement caching
 		go func(skip, limit int) {
+			// signal that we are done with this request
+			defer wg.Done()
 			// choose a random proxy and user agent from the options
 			// do request using that proxy and user agent combo
 			userAgent := userAgents[rand.IntN(len(userAgents))]
@@ -93,9 +95,6 @@ func main() {
 			// read from response body
 
 			// write files based on response
-
-			// signal that we are done with this request
-			wg.Done()
 		}(offset, problemCountPerQuery)
 
 		offset += problemCountPerQuery
@@ -117,6 +116,7 @@ func fetchProxies() ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read proxies response body error: %v", err)
 	}
+	defer proxiesResp.Body.Close()
 
 	proxiesBodyStr := string(proxiesBody)
 	proxiesBodyStr = strings.TrimSuffix(proxiesBodyStr, "\n")
@@ -135,6 +135,7 @@ func fetchUserAgents() ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("user-agents file doesn't exist: %v", err)
 	}
+	defer userAgentsFile.Close()
 
 	userAgentsBytes, err := io.ReadAll(userAgentsFile)
 	if err != nil {
@@ -171,6 +172,7 @@ func fetchProblemCount() (int, error) {
 	if err != nil {
 		return -1, fmt.Errorf("error fetching total problems count: %v", err)
 	}
+	defer totalProblemsResp.Body.Close()
 
 	totalProblemsRespBody, err := io.ReadAll(totalProblemsResp.Body)
 	if err != nil {
