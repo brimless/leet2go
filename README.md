@@ -138,7 +138,7 @@ I don't think I have a reason to leverage that right now. It might be useful inf
 
 Note to self, I need to make sure that I preserve the spacing for elements in `codeDefinition` so that I can maintain the indentations.
 
-### (optional) 5. Serve files
+### 5. Serve files (optional)
 
 We need to make these files accessible to the user somehow. Sure, they could simply open the HTML files manually on their browser, but that's not cool, is it?
 
