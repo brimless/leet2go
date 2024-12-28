@@ -61,14 +61,16 @@ type LeetCodeResponse struct {
 }
 
 func main() {
-	// fetch some random proxies
-	proxies, err := fetchProxies()
-	if err != nil {
-		log.Fatal(err)
-	}
+	if USE_PROXY {
+		// fetch some random proxies
+		proxies, err := fetchProxies()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	fmt.Printf("Found %d proxies.\n", len(proxies))
-	availableProxies = proxies
+		fmt.Printf("Found %d proxies.\n", len(proxies))
+		availableProxies = proxies
+	}
 
 	// fetch user-agents from local user-agents.txt file
 	userAgents, err := fetchUserAgents()
