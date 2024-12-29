@@ -139,15 +139,20 @@ I don't think I have a reason to leverage that right now. It might be useful inf
 
 Note to self, I need to make sure that I preserve the spacing for elements in `codeDefinition` so that I can maintain the indentations.
 
+We can then feed all of these data points into an HTML template with something like the [`html/template`](https://pkg.go.dev/html/template) package.
+
 ### 5. Serve files (optional)
 
 We need to make these files accessible to the user somehow. Sure, they could simply open the HTML files manually on their browser, but that's not cool, is it?
 
 There are a few options to deal with this:
 
-- Simple static file server
-  - This is a simple approach, but wouldn't bring anything valuable to the user; it's just a file explorer with the extra step of running a server.
-- Simple "home page" web app
+- ~~Simple static file server~~
+  - ~~This is a simple approach, but wouldn't bring anything valuable to the user; it's just a file explorer with the extra step of running a server.~~
+  - A browser can natively do this, just navigate to the file path on your browser!
+- Simple "home page" web app + HTML template for question view
   - This can be a very simple HTML home page that allows the users to search for their problems, and some basic features.
 - Build a slightly more complex web app using a framework
   - This will allow for cool visuals and more interactiveness.
+  - Allow to run code ???
+  - This could be a completely separate project!
