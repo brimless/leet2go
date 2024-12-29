@@ -74,7 +74,7 @@ We use the same endpoint as above, but we pass different variables in the body.
 
 ```JSON
 {
-  "query": "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug \n limit:$limit \n skip: $skip \n filters:$filters){questions:data{frontendQuestionId:questionFrontendId \n titleSlug \n title \n difficulty \n hints \n topicTags{name} \n codeDefinition \n content}}}",
+  "query": "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug \n limit:$limit \n skip: $skip \n filters:$filters){questions:data{frontendQuestionId:questionFrontendId \n titleSlug \n title \n difficulty \n acRate \n hints \n topicTags{name} \n codeDefinition \n content}}}",
   "variables": {
     "categorySlug": "all-code-essentials",
     "skip": 0,
@@ -98,6 +98,7 @@ Sample response:
                     "titleSlug": "two-sum",
                     "title": "Two Sum",
                     "difficulty": "Easy",
+                    "acRate": 54.49205508831789,
                     "hints": [
                         "A really brute force way would be to search for all possible pairs of numbers but that would be too slow. Again, it's best to try out brute force solutions for just for completeness. It is from these brute force solutions that you can come up with optimizations.",
                         "So, if we fix one of the numbers, say <code>x</code>, we have to scan the entire array to find the next number <code>y</code> which is <code>value - x</code> where value is the input parameter. Can we change our array somehow so that this search becomes faster?",
