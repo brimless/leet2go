@@ -3,6 +3,7 @@ package scraper
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -63,6 +64,7 @@ func buildHtmlFile(question Question) string {
 
 	sb.WriteString("<title>" + question.Id + ". " + question.Title + "</title>\n")
 	sb.WriteString("<strong>" + question.Difficulty + "</strong>\n")
+	sb.WriteString("<strong>" + fmt.Sprintf("Acceptance Rate: %.2f%%", question.AcceptanceRate) + "</strong>\n")
 	if len(question.Topics) > 0 {
 		sb.WriteString("<ul>\n")
 		sb.WriteString("<li><strong>Topics</strong></li>\n")

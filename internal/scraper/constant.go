@@ -24,7 +24,7 @@ const QUESTIONS_OUTPUT_DIR = "problems/"
 // the graphql queries for leetcode-related queries
 const (
 	QUESTIONS_COUNT_QUERY_STRING = "query problemsetQuestionList($categorySlug:String,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug filters:$filters) {total:totalNum}}"
-	QUESTIONS_QUERY_STRING       = "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){ problemsetQuestionList:questionList( categorySlug:$categorySlug limit:$limit skip:$skip filters:$filters){ questions:data{ frontendQuestionId:questionFrontendId titleSlug title difficulty hints topicTags{name} codeDefinition content}}}"
+	QUESTIONS_QUERY_STRING       = "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){ problemsetQuestionList:questionList( categorySlug:$categorySlug limit:$limit skip:$skip filters:$filters){ questions:data{ frontendQuestionId:questionFrontendId titleSlug title difficulty acRate hints topicTags{name} codeDefinition content}}}"
 )
 
 // in case we don't define a user-agents.txt

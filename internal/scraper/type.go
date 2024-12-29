@@ -20,6 +20,7 @@ type Question struct {
 	TitleSlug       string          `json:"titleSlug"`
 	Title           string          `json:"title"`
 	Difficulty      string          `json:"difficulty"`
+	AcceptanceRate  float64         `json:"acRate"`
 	Hints           []string        `json:"hints"`
 	Topics          []QuestionTopic `json:"topicTags"`
 	CodeDefinitions string          `json:"codeDefinition"` // it's actually an array of objects, but it comes in as a string
