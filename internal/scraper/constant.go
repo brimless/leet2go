@@ -3,7 +3,7 @@ package scraper
 // defines the maximum number of concurrent go routines
 // this affects leetcode questions query and output file writes
 // this also consequently loosely represent req/s
-const MAX_GO_ROUTINES = 35
+const MAX_GO_ROUTINES = 69
 
 // proxies should in theory protect against IP bans, but it seems like they're not reliable (at least the free ones)
 // anyways, for this leetcode in specific, it probably doesn't matter since we don't need that many queries
@@ -14,7 +14,7 @@ const MAX_RETRY = 5
 
 // urls for proxies and leetcode-related queries
 const (
-	PROXIES_API_URL = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1500&country=us,ca&ssl=all&anonymity=elite"
+	PROXIES_API_URL = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1000&country=us,ca&ssl=all&anonymity=elite"
 	LEETCODE_URL    = "https://leetcode.com/graphql/"
 )
 
@@ -29,3 +29,6 @@ const (
 
 // in case we don't define a user-agents.txt
 const DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+// default language
+const DEFAULT_LANG = "python"

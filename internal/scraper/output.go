@@ -1,12 +1,11 @@
 package scraper
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"os"
-	"strings"
 )
 
 func WriteHtmlFilesBatch(questions []Question) FileStatusCounter {
@@ -37,59 +36,47 @@ func WriteHtmlFilesBatch(questions []Question) FileStatusCounter {
 		}
 		defer file.Close()
 
-		writer := bufio.NewWriter(file)
-
-		htmlFileContent := buildHtmlFile(question)
-		_, err = writer.WriteString(htmlFileContent)
+		err = parseHtmlFile(question, file)
 		if err != nil {
-			log.Printf("Error writing string for %s: %v\n", pathname, err)
+			log.Printf("Error while parsing template %s: %v\n", pathname, err)
 			counter.Failure++
 			continue
 		}
 
-		err = writer.Flush()
-		if err != nil {
-			log.Printf("Error writing to the file %s: %v\n", pathname, err)
-			counter.Failure++
-			continue
-		}
 		counter.Success++
 	}
 	return counter
 }
 
-// TODO: segment this into html builder
-func buildHtmlFile(question Question) string {
-	var sb strings.Builder
+func parseHtmlFile(question Question, file *os.File) error {
+	funcs := template.FuncMap{
+		"addInt":            AddInt,
+		"addFloat":          AddFloat,
+		"mult":              Multiply,
+		"float":             ToFloat,
+		"getQuestionColour": GetQuestionDifficultyColour,
+	}
 
-	sb.WriteString("<title>" + question.Id + ". " + question.Title + "</title>\n")
-	sb.WriteString("<strong>" + question.Difficulty + "</strong>\n")
-	sb.WriteString("<strong>" + fmt.Sprintf("Acceptance Rate: %.2f%%", question.AcceptanceRate) + "</strong>\n")
-	if len(question.Topics) > 0 {
-		sb.WriteString("<ul>\n")
-		sb.WriteString("<li><strong>Topics</strong></li>\n")
-		for _, topic := range question.Topics {
-			sb.WriteString("<li>\n")
-			sb.WriteString("<p>" + topic.Name + "</p>\n")
-			sb.WriteString("</li>\n")
-		}
-		sb.WriteString("</ul>\n")
+	t, err := template.New("template.html").Funcs(funcs).ParseFiles("template/template.html")
+	if err != nil {
+		return err
 	}
 
 	var codeDefinitions []CodeDefinition
 	json.Unmarshal([]byte(question.CodeDefinitions), &codeDefinitions)
 
-	sb.WriteString("<ul>\n")
-	for _, codeDefinition := range codeDefinitions {
-		sb.WriteString("<li>\n")
-		sb.WriteString("<p>" + codeDefinition.Text + "</p>\n")
-		sb.WriteString("<code><pre>\n")
-		sb.WriteString(codeDefinition.DefaultCode)
-		sb.WriteString("</pre></code>\n")
-		sb.WriteString("</li>\n")
+	data := map[string]interface{}{
+		"Id":              question.Id,
+		"Title":           question.Title,
+		"Difficulty":      question.Difficulty,
+		"AcceptanceRate":  fmt.Sprintf("%.2f%%", question.AcceptanceRate),
+		"Hints":           question.Hints,
+		"Topics":          question.Topics,
+		"Content":         template.HTML(*question.Content),
+		"CodeDefinitions": codeDefinitions,
+		"DefaultLang":     DEFAULT_LANG,
 	}
-	sb.WriteString("</ul>\n")
-	sb.WriteString(*question.Content)
 
-	return sb.String()
+	err = t.Execute(file, data)
+	return err
 }
