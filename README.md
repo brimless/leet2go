@@ -4,6 +4,7 @@ A simple LeetCode problem scraper for offline LeetCoding, written in Golang!
 
 > [!WARNING]
 > This is still in development.
+> I am also still learning a few things, use at your own risk.
 
 # Motivation
 
@@ -18,7 +19,90 @@ That way, when the _dreaded day_ arrives, I’ll be prepared!
 2. I’m planning to travel soon, and having problems available offline means I can stay productive even on a long flight with no internet.
 3. For fun! Golang has been a joy to work with, and this project gives me a chance to experiment and build something cool!
 
-# R&D
+# How to Use
+
+> [!WARNING]
+> You will need to change the source code since I have not gone around making values configurable via CLI parameters or config files just yet.
+> Specifically, the values that should be adjusted are currently in `./internal/scraper/constant.go`.
+> Simply change the values as needed, then re-build the binary before running it.
+
+## Requirements
+
+- go (I use version 1.23)
+- make \[optional\]
+
+## Build & Run
+
+```bash
+# using make
+make build && make run # or simply `make`
+
+# ...or using go
+go build leet2go ./cmd/scraper
+./leet2go
+```
+
+The result of the above commands will fetch all non-premium LeetCode questions and store them neatly in HTML files that look like this:
+
+![Two Sum HTML output example](./assets/html-output-example.png)
+
+> [!NOTE]
+> There are currently no way to query _only_ certain questions or premium ones for now.
+> Also worth noting that the HTML files will not be overwritten if they already exist (will be a parameter).
+
+## Parameters
+
+These are the values that have worked the best for me so far. I used `MAX_GO_ROUTINES = 69` <sub>nice</sub> because there are currently ~3400 questions on LeetCode and I wanted to "mimick" a
+"<https://leetcode.com/problemset/>" load, where a user queries 50 questions at once. `3400 / 69 ~= 50`, so yeah.
+
+It is still pretty random because I am using free proxies and they seemingly vary A LOT on how they perform, which means that you might have to re-run the code a couple times
+before you are able to get ALL (except premium) LeetCode questions on your local machine. You could increase the `HTTP_TIMEOUT`, `MAX_RETRY` and the `timeout` parameter in `PROXIES_API_URL` to increase
+success chances, but it may take WAYYY longer for the program to finish.
+
+The other noteworthy parameters are `DEFAULT_LANG`, `QUESTIONS_OUTPUT_DIR` and `DEFAULT_USER_AGENT`. They are pretty self-explanatory.
+
+If you don't want to use proxies, you can simply set `USE_PROXY` to `false` and use a small value for `MAX_GO_ROUTINES` (5-10 should be safe). It's _a lot_ more reliable **and** way faster.
+
+```go
+// defines the maximum number of concurrent go routines
+// this affects leetcode questions query and output file writes
+// this also consequently loosely represent req/s
+const MAX_GO_ROUTINES = 69
+
+// proxies should in theory protect against IP bans, but it seems like they're not reliable (at least the free ones)
+// anyways, for this leetcode in specific, it probably doesn't matter since we don't need that many queries
+const USE_PROXY = true
+
+// http client timeout parameter
+const HTTP_TIMEOUT = 10 * time.Second
+
+// some proxies can cause timeouts, gateway errors, etc, so having a retry mechanism is useful
+const MAX_RETRY = 5
+
+// urls for proxies and leetcode-related queries
+// take particular notice to the parameters of the proxy url
+const (
+ PROXIES_API_URL = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1000&country=us,ca&ssl=all&anonymity=elite"
+ LEETCODE_URL    = "https://leetcode.com/graphql/"
+)
+
+// where the html files of the leetcode problems will be stored
+const QUESTIONS_OUTPUT_DIR = "problems/"
+
+// the graphql queries for leetcode-related queries
+const (
+ QUESTIONS_COUNT_QUERY_STRING = "query problemsetQuestionList($categorySlug:String,$filters:QuestionListFilterInput){problemsetQuestionList:questionList(categorySlug:$categorySlug filters:$filters) {total:totalNum}}"
+ QUESTIONS_QUERY_STRING       = "query problemsetQuestionList($categorySlug:String,$limit:Int,$skip:Int,$filters:QuestionListFilterInput){ problemsetQuestionList:questionList( categorySlug:$categorySlug limit:$limit skip:$skip filters:$filters){ questions:data{ frontendQuestionId:questionFrontendId titleSlug title difficulty acRate hints topicTags{name} codeDefinition content}}}"
+)
+
+// in case we don't define a user-agents.txt
+const DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+// default language
+const DEFAULT_LANG = "python"
+```
+
+# How It Works
 
 Turns out we don't need to do much scraping since all the information can all be access via POST `https://leetcode.com/graphql/` requests.
 
@@ -150,9 +234,23 @@ There are a few options to deal with this:
 - ~~Simple static file server~~
   - ~~This is a simple approach, but wouldn't bring anything valuable to the user; it's just a file explorer with the extra step of running a server.~~
   - A browser can natively do this, just navigate to the file path on your browser!
-- Simple "home page" web app + HTML template for question view
+- Simple "home page" web app + HTML template for question view <- this project is going down this path
   - This can be a very simple HTML home page that allows the users to search for their problems, and some basic features.
 - Build a slightly more complex web app using a framework
   - This will allow for cool visuals and more interactiveness.
   - Allow to run code ???
   - This could be a completely separate project!
+
+# Roadmap
+
+Here's a short list of what I still have planned, or am thinking about for this project:
+
+- [ ] Output JSON files as well
+- [ ] A simple "Home Page" to navigate, filter, and search the local files
+- [ ] Add basic syntax highlighting
+- [ ] CLI parameters
+- [ ] Explore how to scrape questions by id or name
+- [ ] Explore how to scrape test cases (if so, add them to HTML template)
+- [ ] Explore if fetching premium questions is possible with a premium account
+- [ ] Add some code editor
+  - will most likely be spin-off project of its own
