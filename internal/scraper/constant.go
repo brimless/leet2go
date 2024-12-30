@@ -1,5 +1,7 @@
 package scraper
 
+import "time"
+
 // defines the maximum number of concurrent go routines
 // this affects leetcode questions query and output file writes
 // this also consequently loosely represent req/s
@@ -9,10 +11,14 @@ const MAX_GO_ROUTINES = 69
 // anyways, for this leetcode in specific, it probably doesn't matter since we don't need that many queries
 const USE_PROXY = true
 
+// http client timeout parameter
+const HTTP_TIMEOUT = 10 * time.Second
+
 // some proxies can cause timeouts, gateway errors, etc, so having a retry mechanism is useful
 const MAX_RETRY = 5
 
 // urls for proxies and leetcode-related queries
+// take particular notice to the parameters of the proxy url
 const (
 	PROXIES_API_URL = "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1000&country=us,ca&ssl=all&anonymity=elite"
 	LEETCODE_URL    = "https://leetcode.com/graphql/"

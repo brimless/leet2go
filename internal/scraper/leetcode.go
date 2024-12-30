@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 )
 
 func NewLeetCodeClient(useProxy bool) *LeetCodeClient {
 	var httpClient *http.Client
 	httpClient = &http.Client{
-		Timeout: 10 * time.Second, // TODO: play with this value (also need to change the proxy api query to match this)
+		Timeout: HTTP_TIMEOUT, // TODO: play with this value (also need to change the proxy api query to match this)
 	}
 	if useProxy {
 		randomProxyTransport := getRandomProxyTransport()
