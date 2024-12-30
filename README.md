@@ -246,6 +246,7 @@ There are a few options to deal with this:
 Here's a short list of what I still have planned, or am thinking about for this project:
 
 - [ ] Output JSON files as well
+- [ ] Give option to download images from description locally
 - [ ] A simple "Home Page" to navigate, filter, and search the local files
 - [ ] Add basic syntax highlighting
 - [ ] CLI parameters
